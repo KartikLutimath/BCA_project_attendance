@@ -2,6 +2,7 @@ import { prisma } from "@/config/database";
 import { Role } from "@prisma/client";
 import { TOKEN } from "@/common/constants";
 import { signRefreshToken } from "@/utils/jwt.utils";
+import { randomUUID } from "crypto";
 
 // ─── User queries ─────────────────────────────────────────────────────────────
 
@@ -30,22 +31,21 @@ export class AuthRepository {
   // ─── Refresh token queries ──────────────────────────────────────────────────
 
   static async createRefreshToken(userId: string): Promise<string> {
-    // Step 1: create record to get the DB-generated id
-    const record = await prisma.refreshToken.create({
+    // Generate a unique record ID upfront so we can embed it in the JWT
+    const tokenId = randomUUID();
+    const expiresAt = new Date(Date.now() + TOKEN.REFRESH_EXPIRES_MS);
+
+    // Sign the JWT with the pre-generated tokenId
+    const token = signRefreshToken({ sub: userId, tokenId });
+
+    // Single insert — no placeholder, no collision
+    await prisma.refreshToken.create({
       data: {
-        token: "placeholder",
+        id: tokenId,
+        token,
         userId,
-        expiresAt: new Date(Date.now() + TOKEN.REFRESH_EXPIRES_MS),
+        expiresAt,
       },
-    });
-
-    // Step 2: sign with real tokenId for revocation support
-    const token = signRefreshToken({ sub: userId, tokenId: record.id });
-
-    // Step 3: update the record with the signed token
-    await prisma.refreshToken.update({
-      where: { id: record.id },
-      data: { token },
     });
 
     return token;
