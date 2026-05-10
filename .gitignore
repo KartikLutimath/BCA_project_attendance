@@ -1,0 +1,237 @@
+# ==============================================================================
+#  SmartAttendance AI — .gitignore
+#  Covers: Node.js · Next.js · TypeScript · Prisma · Docker · Turbo · OS files
+# ==============================================================================
+
+# ── SECURITY: NEVER COMMIT THESE ──────────────────────────────────────────────
+# Environment variable files (contain DB passwords, JWT secrets, API keys, etc.)
+.env
+.env.*
+!.env.example          # keep the example template (no real values)
+
+# Private keys, certificates, secrets
+*.pem
+*.key
+*.p12
+*.pfx
+*.cert
+*.crt
+*.cer
+*.der
+*.csr
+secrets/
+secrets.json
+secrets.yaml
+secrets.yml
+credentials.json
+service-account*.json
+
+# JWT / Auth tokens (if ever stored as files)
+*.token
+jwt.config.js
+jwt.config.ts
+
+# SSH keys
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+*.ppk
+
+# ==============================================================================
+# NODE / NPM / PNPM / YARN
+# ==============================================================================
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.npm
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+package-lock.json.bak
+
+# ==============================================================================
+# NEXT.JS (apps/web)
+# ==============================================================================
+.next/
+out/
+build/
+dist/
+.vercel
+.netlify
+next-env.d.ts
+
+# ==============================================================================
+# TYPESCRIPT
+# ==============================================================================
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+
+# ==============================================================================
+# TURBOREPO
+# ==============================================================================
+.turbo/
+**/turbo/
+
+# ==============================================================================
+# PRISMA
+# ==============================================================================
+# Migration lock — keep schema and migrations, skip local env overrides
+prisma/.env
+# Generated Prisma client (regenerated on `prisma generate`)
+**/node_modules/.prisma/
+**/node_modules/@prisma/client/
+
+# ==============================================================================
+# BUILD ARTIFACTS
+# ==============================================================================
+dist/
+build/
+*.js.map
+*.d.ts.map
+*.tgz
+
+# ==============================================================================
+# TESTING
+# ==============================================================================
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
+cypress/videos/
+cypress/screenshots/
+
+# ==============================================================================
+# LOGS
+# ==============================================================================
+logs/
+*.log
+*.log.*
+log/
+
+# ==============================================================================
+# DOCKER
+# ==============================================================================
+# Do NOT ignore Dockerfile or docker-compose — they are version-controlled.
+# Only ignore local override files with real credentials:
+docker-compose.override.yml
+.docker/
+docker/.env
+
+# ==============================================================================
+# DATABASE
+# ==============================================================================
+*.sql.bak
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+dump.sql
+*.dump
+
+# ==============================================================================
+# EDITORS & IDEs
+# ==============================================================================
+# VS Code
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/launch.json
+
+# IntelliJ / WebStorm
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Vim / Emacs
+*.swp
+*.swo
+*~
+\#*\#
+.\#*
+
+# ==============================================================================
+# OPERATING SYSTEM
+# ==============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptdata
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+.directory
+
+# ==============================================================================
+# MISC / TOOLING
+# ==============================================================================
+# ESLint cache
+.eslintcache
+
+# Prettier cache
+.prettiercache
+
+# Stylelint cache
+.stylelintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Diagnostic reports
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Temp / scratch files
+tmp/
+temp/
+scratch/
+*.tmp
+*.bak
+*.orig
+
+# Storybook
+storybook-static/
+
+# ==============================================================================
+# PROJECT-SPECIFIC
+# ==============================================================================
+# Face descriptor uploads / temporary biometric data (never commit raw biometrics)
+uploads/
+face-samples/
+descriptors/
+
+# Generated reports (Excel / PDF exports)
+exports/
+*.xlsx
+*.pdf
+
+# Redis dump
+dump.rdb
+
+# Scaffold script (one-time use, not needed in repo)
+scaffold.ps1
