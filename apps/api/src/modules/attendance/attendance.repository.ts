@@ -64,7 +64,9 @@ export class AttendanceRepository {
   }
 
   static async getSubjectSummary(studentId: string, sectionId: string) {
-    return prisma.$queryRaw`
+    const rows = await prisma.$queryRaw<
+      { subjectId: string; subjectName: string; total: bigint; present: bigint }[]
+    >`
       SELECT
         s.id       AS subjectId,
         s.name     AS subjectName,
@@ -77,5 +79,13 @@ export class AttendanceRepository {
         AND t.sectionId = ${sectionId}
       GROUP BY s.id, s.name
     `;
+
+    // MySQL COUNT/SUM returns BigInt — convert to plain numbers for JSON serialisation
+    return rows.map((r) => ({
+      subjectId:   r.subjectId,
+      subjectName: r.subjectName,
+      total:   Number(r.total),
+      present: Number(r.present ?? 0),
+    }));
   }
 }
