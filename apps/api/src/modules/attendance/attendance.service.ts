@@ -1,5 +1,6 @@
 import { TimetablesService } from "../timetables/timetables.service";
 import { AttendanceRepository } from "./attendance.repository";
+import { GeofenceService } from "../geofence/geofence.service";
 import { AppError } from "@/common/errors";
 import { MarkAttendanceDTO, AttendanceFilters } from "./attendance.types";
 import { AttendanceStatus } from "@prisma/client";
@@ -15,13 +16,33 @@ export class AttendanceService {
     }
 
     // ── PHASE 4: Attendance Window Validation ──
-    // Validate that student is marking attendance within the allowed window
     validateAttendanceWindow(session.startTime, ATTENDANCE_WINDOW_MINUTES);
 
     // ── PHASE 4: Active Session Validation ──
-    // Ensure we're still in the class time range
     if (!isInActiveSession(session.startTime, session.endTime)) {
       throw new AppError("Class session is not currently active", 403, "SESSION_NOT_ACTIVE");
+    }
+
+    // ── PHASE 5: Geofence Validation ──
+    // Student must be within classroom radius to mark attendance
+    let geofenceResult = null;
+    let geofenceVerified = false;
+
+    if (payload.latitude !== undefined && payload.longitude !== undefined) {
+      try {
+        geofenceResult = GeofenceService.validate({
+          studentLat: payload.latitude,
+          studentLng: payload.longitude,
+          classroomLat: session.classroom.latitude,
+          classroomLng: session.classroom.longitude,
+          allowedRadius: session.classroom.radius,
+          accuracy: payload.accuracy,
+        });
+        geofenceVerified = geofenceResult.isInside;
+      } catch (error) {
+        // Geofence validation failed
+        throw error;
+      }
     }
 
     const today = new Date();
@@ -32,7 +53,7 @@ export class AttendanceService {
       throw new AppError("Attendance already marked for this session", 409, "ALREADY_MARKED");
     }
 
-    // Phase 4: Proceed directly to save with PENDING status (skip face and geofence verification)
+    // Phase 5: Save attendance with geofence verification data
     const record = await AttendanceRepository.create({
       studentId,
       timetableId: session.id,
@@ -40,9 +61,10 @@ export class AttendanceService {
       status: "PENDING",
       isVerified: false,
       faceVerified: false,
-      geofenceVerified: false,
+      geofenceVerified,
       latitude: payload.latitude,
       longitude: payload.longitude,
+      distanceMeters: geofenceResult?.distance,
     });
 
     // Generate log
@@ -51,7 +73,7 @@ export class AttendanceService {
       changedBy: studentId,
       previousStatus: "PENDING",
       newStatus: "PENDING",
-      reason: "Initial submission",
+      reason: geofenceVerified ? "Submitted with geofence verification" : "Submitted without geofence",
     });
 
     return {
@@ -59,6 +81,8 @@ export class AttendanceService {
       subject: session.subject.name,
       markedAt: record.markedAt,
       status: record.status,
+      geofenceVerified,
+      distance: geofenceResult?.distance,
     };
   }
 

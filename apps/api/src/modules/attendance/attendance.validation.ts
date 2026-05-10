@@ -6,6 +6,7 @@ export const markAttendanceSchema = z.object({
     faceDescriptor: z.array(z.number()).length(128, "Descriptor must have 128 values").optional(),
     latitude: z.number().min(-90).max(90).optional(),
     longitude: z.number().min(-180).max(180).optional(),
+    accuracy: z.number().min(0).max(500, "GPS accuracy should be < 500m").optional(), // Phase 5
   }),
 });
 

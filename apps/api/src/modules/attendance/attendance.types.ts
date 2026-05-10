@@ -3,6 +3,7 @@ import { AttendanceStatus } from "@prisma/client";
 export interface MarkAttendanceDTO {
   latitude?: number;
   longitude?: number;
+  accuracy?: number; // GPS accuracy in metres (Phase 5)
   faceDescriptor?: number[];
 }
 
@@ -30,6 +31,7 @@ export interface CreateAttendanceDTO {
   geofenceVerified?: boolean;
   latitude?: number;
   longitude?: number;
+  distanceMeters?: number; // Phase 5: Distance from classroom center
 }
 
 export interface CreateLogDTO {
