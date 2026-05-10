@@ -18,7 +18,7 @@ export class GeofenceController {
         throw new AppError("timetableId, latitude, and longitude are required", 400);
       }
 
-      const result = await GeofenceService.verifyLocation(latitude, longitude, timetableId);
+      const result = await GeofenceService.verifyLocation(latitude, longitude, timetableId, accuracy);
 
       res.json({
         success: true,

@@ -11,6 +11,7 @@
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
     "db:push": "prisma db push",
+    "db:seed": "ts-node --transpile-only prisma/seed.ts",
     "lint": "eslint src --ext .ts"
   },
   "dependencies": {

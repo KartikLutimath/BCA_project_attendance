@@ -81,7 +81,7 @@ export class GeofenceService {
    * Verify location for a specific timetable slot
    * Fetches classroom details and performs geofence check
    */
-  static async verifyLocation(studentLat: number, studentLng: number, timetableId: string) {
+  static async verifyLocation(studentLat: number, studentLng: number, timetableId: string, accuracy?: number) {
     // Fetch timetable with classroom details
     const timetable = await prisma.timetable.findUnique({
       where: { id: timetableId },
@@ -111,6 +111,7 @@ export class GeofenceService {
       classroomLat: timetable.classroom.latitude,
       classroomLng: timetable.classroom.longitude,
       allowedRadius: timetable.classroom.radius,
+      accuracy, // Pass GPS accuracy through for threshold check
     });
 
     return {
@@ -119,6 +120,7 @@ export class GeofenceService {
       allowedRadius: timetable.classroom.radius,
       margin: result.margin,
       classroomName: timetable.classroom.name,
+      accuracy: result.accuracy,
     };
   }
 

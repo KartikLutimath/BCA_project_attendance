@@ -5,6 +5,7 @@ import { GeofenceController } from "./geofence.controller";
 import { authenticate } from "@/middleware/auth.middleware";
 import { authorize } from "@/middleware/rbac.middleware";
 import { validate } from "@/middleware/validation.middleware";
+import { geofenceRateLimiter } from "@/middleware/rateLimiter.middleware";
 import { verifyLocationSchema, updateClassroomLocationSchema } from "./geofence.validation";
 
 const router = Router();
@@ -18,6 +19,7 @@ router.post(
   "/verify",
   authenticate,
   authorize(["STUDENT"]),
+  geofenceRateLimiter, // Phase 5: max 10 location checks per minute
   validate(verifyLocationSchema),
   GeofenceController.verifyLocation
 );

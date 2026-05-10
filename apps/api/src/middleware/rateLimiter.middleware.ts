@@ -36,3 +36,15 @@ export const attendanceRateLimiter = rateLimit({
   legacyHeaders: false,
   message: failure("Too many attendance submissions. Please wait."),
 });
+
+/**
+ * geofenceRateLimiter — max 10 location verifications per minute per IP.
+ * Prevents location verification abuse (Phase 5).
+ */
+export const geofenceRateLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: failure("Too many location verification requests. Please wait."),
+});
