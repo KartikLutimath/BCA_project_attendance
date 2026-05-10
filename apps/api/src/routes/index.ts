@@ -7,6 +7,7 @@ import subjectRoutes from "@/modules/subjects/subjects.routes";
 import classroomRoutes from "@/modules/classrooms/classrooms.routes";
 import sectionRoutes from "@/modules/sections/sections.routes";
 import timetableRoutes from "@/modules/timetables/timetables.routes";
+import { attendanceRoutes } from "@/modules/attendance/attendance.routes";
 
 const router = Router();
 
@@ -18,11 +19,11 @@ router.use("/subjects", subjectRoutes);
 router.use("/classrooms", classroomRoutes);
 router.use("/sections", sectionRoutes);
 router.use("/timetables", timetableRoutes);
+router.use("/attendance", attendanceRoutes);
 
 // ─── Future phase routes (registered here when implemented) ───────────────────
 // router.use("/students",     studentsRoutes);
 // router.use("/teachers",     teachersRoutes);
-// router.use("/attendance",   attendanceRoutes);
 // router.use("/geofence",     geofenceRoutes);
 // router.use("/analytics",    analyticsRoutes);
 // router.use("/reports",      reportsRoutes);
